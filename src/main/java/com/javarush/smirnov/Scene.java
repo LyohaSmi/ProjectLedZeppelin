@@ -8,7 +8,7 @@ public class Scene {
     private List<Option> options;
     private boolean gameOver = false;
 
-    private String endType = null; // "win", "lose", или null если не конец
+    private String endType = null;
     public Scene(int id, String text, String endType) {
         this.id = id;
         this.text = text;

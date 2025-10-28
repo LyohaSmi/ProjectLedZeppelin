@@ -19,27 +19,21 @@ import java.util.Map;
 public class GameServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-
-        // Получаем имя игрока из параметра (новое имя) или из сессии (текущее имя)
         String playerName = request.getParameter("playerName");
         if (playerName != null && !playerName.trim().isEmpty()) {
-            // Если пришло новое имя, сохраняем его и очищаем статистику
             session.setAttribute("playerName", playerName.trim());
-            session.removeAttribute("gameStats"); // Новая статистика для нового игрока
+            session.removeAttribute("gameStats");
         } else {
-            // Иначе берем имя из сессии
             playerName = (String) session.getAttribute("playerName");
         }
 
-        // Если имени все еще нет, перенаправляем на ввод имени
         if (playerName == null) {
             response.sendRedirect("start");
             return;
         }
 
-        // Получаем текущую сцену
         Integer currentSceneId = (Integer) session.getAttribute("currentSceneId");
         if (currentSceneId == null) {
             currentSceneId = 1;
@@ -53,15 +47,13 @@ public class GameServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
 
-        // Обрабатываем выбор игрока
         String selectedOption = request.getParameter("selectedOption");
         if (selectedOption != null) {
             int optionIndex = Integer.parseInt(selectedOption);
 
-            // Получаем текущую сцену
             Integer currentSceneId = (Integer) session.getAttribute("currentSceneId");
             if (currentSceneId == null) {
                 currentSceneId = 1;
@@ -69,18 +61,13 @@ public class GameServlet extends HttpServlet {
 
             Scene currentScene = Data.get(currentSceneId);
 
-            // Получаем выбранный вариант
             Option chosenOption = currentScene.getOptions().get(optionIndex);
 
-            // Переходим к следующей сцене
             session.setAttribute("currentSceneId", chosenOption.getNextSceneId());
 
-            // Получаем новую сцену для проверки на gameOver
             Scene newScene = Data.get(chosenOption.getNextSceneId());
 
-            // Обновляем статистику если игра окончена
             if (newScene.isGameOver()) {
-                // Получаем или создаем статистику
                 Map<String, Integer> stats = (Map<String, Integer>) session.getAttribute("gameStats");
                 if (stats == null) {
                     stats = new HashMap<>();
@@ -89,7 +76,6 @@ public class GameServlet extends HttpServlet {
                     stats.put("losses", 0);
                 }
 
-                // Обновляем статистику
                 stats.put("totalGames", stats.get("totalGames") + 1);
                 if ("win".equals(newScene.getEndType())) {
                     stats.put("wins", stats.get("wins") + 1);

@@ -1,7 +1,7 @@
 package com.javarush.smirnov;
 
 public class Option {
-    private String text;               // Текст варианта выбора
+    private String text;
     private int nextSceneId;
 
     public Option(int nextSceneId, String text){

@@ -13,18 +13,15 @@ import java.io.IOException;
 public class ContinueServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
 
-        // Проверяем, есть ли сохраненное имя
         String playerName = (String) session.getAttribute("playerName");
         if (playerName == null) {
-            // Если имени нет, идем на страницу ввода имени
             response.sendRedirect("start");
             return;
         }
 
-        // Начинаем игру с сохраненным именем
         session.setAttribute("currentSceneId", 1);
         response.sendRedirect("game");
     }

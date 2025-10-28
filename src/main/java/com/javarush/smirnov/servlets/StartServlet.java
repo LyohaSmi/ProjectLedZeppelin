@@ -13,9 +13,8 @@ import java.io.IOException;
 public class StartServlet extends HttpServlet {
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-        // Очищаем прогресс при начале новой игры
         session.removeAttribute("currentSceneId");
         session.removeAttribute("playerName");
         session.removeAttribute("gameStats");
